@@ -6,3 +6,4 @@ __pycache__/
 database.db
 static/qr/
 static/dishes/
+alembic.ini
