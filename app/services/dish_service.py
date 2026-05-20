@@ -1,9 +1,8 @@
 from sqlmodel import Session
-import shutil
-import os
 from fastapi import HTTPException, UploadFile
 from app.crud import dish as crud
 from app.schemas.dish import DishCreate, DishUpdate, DishResponse 
+from app.utils.cloudinary import upload_image 
 
 def add_dish(session:Session, dish_data: DishCreate):
     dish = crud.get_dish_by_name(session, dish_data.dish_name)
@@ -47,22 +46,16 @@ def delete_dish(session:Session, dish_id):
     return {"message": "Dish deleted successfully"}
 
 
+
 def upload_dish_image(session, dish_id: int, file: UploadFile):
     dish = crud.get_dish_by_id(session, dish_id)
     if not dish:
         raise HTTPException(status_code=404, detail="Dish not found")
-    
-    os.makedirs("static/dishes", exist_ok=True)
-    
-    extension = file.filename.split(".")[-1]
-    file_path = f"static/dishes/{dish_id}.{extension}"
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    
-    image_url = f"/static/dishes/{dish_id}.{extension}"
+
+    image_url = upload_image(file.file)
+
     dish.image_url = image_url
     session.commit()
     session.refresh(dish)
-    
+
     return DishResponse.model_validate(dish)
