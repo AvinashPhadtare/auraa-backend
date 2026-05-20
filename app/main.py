@@ -33,7 +33,7 @@ app.add_middleware(
     "http://localhost:8080",
     "http://localhost:5173",  
     "https://b43cc890-auraa-management.phadtareavinash2008.workers.dev",
-    "https://auraa-frontend-weld.vercel.app",
+    "https://auraa-resto-management.vercel.app/menu",
 ],
     allow_credentials=True,
     allow_methods=["*"],
